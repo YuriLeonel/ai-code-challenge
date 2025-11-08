@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { generateChallenge } from '../services/challengeService.js';
+import { generateChallenge, checkOllamaHealth } from '../services/challengeService.js';
 import type { GenerateChallengeRequest } from '../../../shared/types.js';
 
 const router = Router();
@@ -54,6 +54,22 @@ router.get('/models', async (_req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       error: 'Failed to fetch models. Make sure Ollama is running.'
+    });
+  }
+});
+
+// Check Ollama health and model availability
+router.get('/ollama-health', async (_req: Request, res: Response) => {
+  try {
+    const health = await checkOllamaHealth();
+    res.json({
+      success: true,
+      ...health
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to check Ollama health'
     });
   }
 });

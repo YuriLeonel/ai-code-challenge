@@ -65,11 +65,39 @@ export async function generateChallenge(
     });
 
     const rawContent = response.message.content;
+    console.log('=== OLLAMA RAW RESPONSE ===');
     console.log('Raw response length:', rawContent.length);
-    console.log('Raw response preview:', rawContent.substring(0, 500));
+    console.log('Raw response preview (first 1000 chars):', rawContent.substring(0, 1000));
+    console.log('Raw response preview (last 500 chars):', rawContent.substring(Math.max(0, rawContent.length - 500)));
+    console.log('===========================');
+
+    // Check if response is empty or too short
+    if (!rawContent || rawContent.trim().length < 50) {
+      throw new Error(`Ollama returned an empty or too short response (length: ${rawContent?.length || 0}). The model may not be responding properly.`);
+    }
 
     // Phase 2: Extract and sanitize the challenge
     const partialChallenge = extractAndSanitizeChallenge(rawContent);
+    
+    console.log('=== EXTRACTED CHALLENGE ===');
+    console.log('Fields present:', Object.keys(partialChallenge));
+    console.log('Has title:', !!partialChallenge.title);
+    console.log('Has statement:', !!partialChallenge.statement);
+    console.log('Has examples:', partialChallenge.examples?.length || 0);
+    console.log('Has test_cases:', partialChallenge.test_cases?.length || 0);
+    console.log('===========================');
+    
+    // Check if the extracted challenge is essentially empty
+    const hasMinimalContent = 
+      partialChallenge.title || 
+      partialChallenge.statement || 
+      (partialChallenge.examples && partialChallenge.examples.length > 0) ||
+      (partialChallenge.test_cases && partialChallenge.test_cases.length > 0);
+    
+    if (!hasMinimalContent) {
+      console.error('WARNING: Extracted challenge appears to be empty or invalid');
+      console.error('Extracted object:', JSON.stringify(partialChallenge, null, 2));
+    }
     
     // Apply defaults for missing fields
     let challenge: CodeChallengeItem = applyDefaults(partialChallenge, { language, level, tags });
