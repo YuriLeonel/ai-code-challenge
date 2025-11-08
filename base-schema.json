@@ -1,0 +1,136 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "CodeChallengeItem",
+    "type": "object",
+    "required": [
+      "id",
+      "title",
+      "language",
+      "level",
+      "tags",
+      "statement",
+      "input_format",
+      "output_format",
+      "test_cases",
+      "reference_solution",
+      "feedback"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "Unique identifier for the challenge (UUID or slug)."
+      },
+      "title": {
+        "type": "string",
+        "description": "Short and descriptive challenge title."
+      },
+      "language": {
+        "type": "string",
+        "enum": ["JavaScript", "Python", "TypeScript", "C#", "Java", "Go"],
+        "description": "Primary programming language."
+      },
+      "level": {
+        "type": "string",
+        "enum": ["beginner", "intermediate", "advanced"],
+        "description": "Difficulty level."
+      },
+      "tags": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Relevant topics or concepts (e.g., array, recursion, string)."
+      },
+      "statement": {
+        "type": "string",
+        "description": "Full problem description including context and goal."
+      },
+      "input_format": {
+        "type": "string",
+        "description": "Expected format of input data."
+      },
+      "output_format": {
+        "type": "string",
+        "description": "Expected format of output data."
+      },
+      "examples": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["input", "output"],
+          "properties": {
+            "input": { "type": "string" },
+            "output": { "type": "string" },
+            "explanation": { "type": "string" }
+          }
+        },
+        "description": "Input and output examples to illustrate the problem."
+      },
+      "test_cases": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["input", "expected_output"],
+          "properties": {
+            "input": { "type": "string" },
+            "expected_output": { "type": "string" },
+            "weight": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "description": "Test cases with optional weights for evaluation."
+      },
+      "reference_solution": {
+        "type": "object",
+        "required": ["code", "complexity"],
+        "properties": {
+          "code": { "type": "string" },
+          "complexity": {
+            "type": "string",
+            "description": "Estimated time complexity (e.g., O(n), O(n^2))."
+          },
+          "explanation": { "type": "string" }
+        },
+        "description": "Ideal solution and its explanation."
+      },
+      "common_errors": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["pattern", "explanation"],
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "description": "Frequent incorrect approach or mistake."
+            },
+            "explanation": {
+              "type": "string",
+              "description": "Why it’s wrong and how to fix it."
+            }
+          }
+        },
+        "description": "Frequent mistakes and corrective guidance."
+      },
+      "feedback": {
+        "type": "object",
+        "required": ["summary", "tips"],
+        "properties": {
+          "summary": { "type": "string" },
+          "tips": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "description": "Standard pedagogical feedback."
+      },
+      "metadata": {
+        "type": "object",
+        "properties": {
+          "source_url": { "type": "string", "format": "uri" },
+          "license": { "type": "string" },
+          "author": { "type": "string" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "last_reviewed": { "type": "string", "format": "date-time" }
+        },
+        "description": "Additional and source-related information."
+      }
+    }
+  }
+  
