@@ -61,9 +61,8 @@ export async function generateChallenge(
         top_p: 0.9,
         num_predict: 3072, // More tokens for complete response
       },
-      // Remove format: 'json' to allow more flexible output
+      format: 'json'
     });
-
     const rawContent = response.message.content;
     console.log('=== OLLAMA RAW RESPONSE ===');
     console.log('Raw response length:', rawContent.length);
